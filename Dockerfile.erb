@@ -1,0 +1,25 @@
+# encoding: UTF-8
+
+FROM <%= ENV.fetch('FROM') %>
+MAINTAINER The Blue Beluga <admin@bluebeluga.io>
+
+LABEL name="registry"
+LABEL description="Alpine Linux Base with Docker Registry"
+LABEL version="<%= ENV.fetch('REGISTRY_VERSION') %>"
+LABEL git_revision="<%= ENV.fetch('GIT_REVISION') %>"
+
+RUN apk-install apache2-utils curl nginx openssl ruby && \
+    chown -R nginx:nginx /var/lib/nginx && \
+    mkdir -p /etc/nginx/sites-enabled && \
+    apk del curl && \
+    rm -rf /var/cache/apk/*
+
+COPY files/nginx.conf /etc/nginx/nginx.conf
+COPY files/docker-registry-proxy-v2.erb /
+COPY files/docker-registry-proxy.erb /
+COPY files/registry.sh /
+
+VOLUME /etc/nginx/ssl
+
+EXPOSE 443
+CMD ["./registry.sh"]
