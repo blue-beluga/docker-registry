@@ -1,12 +1,13 @@
 # encoding: UTF-8
 
-FROM <%= ENV.fetch('FROM') %>
+FROM <%= ENV.fetch('FROM') %>:<%= ENV.fetch('TAG') %>
 MAINTAINER The Blue Beluga <admin@bluebeluga.io>
 
-LABEL name="registry"
-LABEL description="Alpine Linux Base with Docker Registry"
-LABEL version="<%= ENV.fetch('REGISTRY_VERSION') %>"
-LABEL git_revision="<%= ENV.fetch('GIT_REVISION') %>"
+LABEL vendor="The Blue Beluga Company"
+LABEL io.bluebeluga.registry.description="Alpine Linux Registry"
+LABEL io.bluebeluga.registry.version="<%= ENV.fetch('TAG') %>"
+LABEL io.bluebeluga.registry.git-revision="<%= ENV.fetch('GIT_REVISION') %>"
+LABEL io.bluebeluga.registry.release-date="<%= Time.now.strftime('%B %d, %Y %H:%M') %>"
 
 RUN apk-install apache2-utils curl nginx openssl ruby && \
     chown -R nginx:nginx /var/lib/nginx && \
